@@ -7,45 +7,44 @@ module Opera
   class JSiCO
 
   def initialize lg = nil,ph = nil,fe = nil
+     JSiCO::init
      language lg
      compiler_path ph
      filename fe
   end
 
-  def language lang = nil
-    @lang = lang if lang
-    @lang
-  end
-
-  def compiler_path path = nil
-    @path = path if path
-    @path
-  end
-
-  def filename file = nil
-    @filename = file if file
-    @filename
-  end
-
    def compile todo
-     send "#{@lang.to_s}_compile".to_sym , todo
-   end
+     if File.exist?(todo)
+       send "#{language().to_s}_compile".to_sym , File.open(todo).read
+     else
+       send "#{language().to_s}_compile".to_sym , todo
+     end
+    end
 
     private
 
+    def self.init
+     %w!language compiler_path filename!.each do |i|
+       send :define_method, i.to_sym ,lambda {  |arg = nil|
+         instance_variable_set("@#{i}",arg) if arg
+         instance_variable_get("@#{i}")
+       }
+     end
+    end
+
     def prepare ptp
-      if ptp =~ /^(http|https|ftp):\/\/([0-9a-z\.]+)(\/([0-9a-z\.]+))*/
+    if ptp =~ /^(http|https|ftp):\/\/([0-9a-z\.]+)(\/([0-9a-z\.]+))*/
 	  nas = open(ptp).read
 	  s = File.join("coffee","user-coffee-compiler.js")
 	  File.new(s,"w+").write(nas)
 	  compiler_path(s)
-	  return nas 
-      elsif ptp
+	  nas
+    elsif ptp
 	  File.open(ptp,"r").read
 	  else
 	  File.open(File.join("coffee","coffee-script.js"),"r").read
 	  end
-	end
+	  end
 
     def coffee_script_compile todo
       red = prepare(compiler_path)
