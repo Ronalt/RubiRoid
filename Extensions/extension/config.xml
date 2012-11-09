@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<widget xmlns='http://www.w3.org/ns/widgets' id='www.ekscalibur.net'>
+<name xml:lang='en'>
+ITest
+</name>
+<author email='erlang@gmail.com' href='www.ekscalibur.net' xml:lang='en'>
+I
+</author>
+<author xml:lang='ru'>
+Ya
+</author>
+<author xml:lang='de'>
+Ich
+</author>
+<description xml:lang='en'>
+I tested my framework
+</description>
+<description xml:lang='fr'>
+Returi de juli o derit tu Berie.
+</description>
+<description xml:lang='de'>
+Returi de juli o derit tu Berie.
+</description>
+<icon src='non'/>
+<access origin='http://yandex.ru' subdomains='true'/>
+<preference name='Smbody' value='Smthing'/>
+<feature name='opera:speed_dial'>
+<param name='url' value='http://error.ru'/>
+</feature>
+<feature name='opera:share-cookies' required='true'/>
+</widget>
