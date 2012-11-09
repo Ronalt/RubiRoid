@@ -1,5 +1,6 @@
 #encoding: UTF-8
 require "execjs"
+require "open-uri"
 
 module Opera
 
@@ -17,7 +18,6 @@ module Opera
   end
 
   def compiler_path path = nil
-    path ||= File.join("coffee","coffee-script.js")
     @path = path if path
     @path
   end
@@ -33,9 +33,23 @@ module Opera
 
     private
 
+    def prepare ptp
+      if ptp =~ /^(http|https|ftp):\/\/([0-9a-z\.]+)(\/([0-9a-z\.]+))*/
+	  nas = open(ptp).read
+	  s = File.join("coffee","user-coffee-compiler.js")
+	  File.new(s,"w+").write(nas)
+	  compiler_path(s)
+	  return nas 
+      elsif ptp
+	  File.open(ptp,"r").read
+	  else
+	  File.open(File.join("coffee","coffee-script.js"),"r").read
+	  end
+	end
+
     def coffee_script_compile todo
-      context = ExecJS.compile(compiler_path)
-      js = context.call("CoffeeScript.compile", todo, :bare => true)
+      red = prepare(compiler_path)
+      js = ExecJS.compile(red).call("CoffeeScript.compile",todo, bare: true)
       javascript_compile(js)
     end
 
@@ -46,6 +60,5 @@ module Opera
     end
 
   end
-
 end
 
